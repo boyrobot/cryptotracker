@@ -18,10 +18,6 @@ import 'model/image_keys.dart';
 import 'model/config.dart';
 import "package:flutter_svg/flutter_svg.dart";
 
-Future<dynamic> _apiGet(String link) async {
-  return json.decode((await http.get(Uri.parse("$_api$link"))).body);
-}
-
 void _changeCurrency(String currency) {
   var conversionData = _conversionMap[_settings["currency"]];
   _exchangeRate = conversionData["rate"];
