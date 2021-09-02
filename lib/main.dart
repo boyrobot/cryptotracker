@@ -1,3 +1,4 @@
+import 'package:cryptotracker/dao/assets_dao.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import "dart:collection";
@@ -18,6 +19,60 @@ import 'model/image_keys.dart';
 import 'model/config.dart';
 import "package:flutter_svg/flutter_svg.dart";
 
+String _api = "https://api.coincap.io/v2/";
+HashMap<String, Map<String, dynamic>> _coinData;
+HashMap<String, ValueNotifier<num>> _valueNotifiers =
+    HashMap<String, ValueNotifier<num>>();
+List<String> _savedCoins;
+Database _userData;
+Map<String, dynamic> _settings;
+String _symbol;
+
+/// 支持的货币
+LinkedHashSet<String> _supportedCurrencies = LinkedHashSet.from([
+  "USD",
+  "AUD",
+  "BGN",
+  "BRL",
+  "CAD",
+  "CHF",
+  "CNY",
+  "CZK",
+  "DKK",
+  "EUR",
+  "GBP",
+  "HKD",
+  "HRK",
+  "HUF",
+  "IDR",
+  "ILS",
+  "INR",
+  "ISK",
+  "JPY",
+  "KRW",
+  "MXN",
+  "MYR",
+  "NOK",
+  "NZD",
+  "PHP",
+  "PLN",
+  "RON",
+  "RUB",
+  "SEK",
+  "SGD",
+  "THB",
+  "TRY",
+  "ZAR"
+]);
+Map<String, dynamic> _conversionMap;
+num _exchangeRate;
+
+bool _loading = false;
+
+Future<dynamic> _apiGet(String link) async {
+  return json.decode((await http.get(Uri.parse("$_api$link"))).body);
+}
+
 void _changeCurrency(String currency) {
   var conversionData = _conversionMap[_settings["currency"]];
   _exchangeRate = conversionData["rate"];
@@ -26,7 +81,7 @@ void _changeCurrency(String currency) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SyncfusionLicense.registerLicense(syncKey);
+  SyncfusionLicense.registerLicense(Config.syncKey);
 
   _userData = Database((await getApplicationDocumentsDirectory()).path);
   _savedCoins = (await _userData["saved"])?.cast<String>() ?? [];
@@ -35,6 +90,8 @@ void main() async {
     _settings = {"disableGraphs": false, "currency": "USD"};
     _userData["settings"] = _settings;
   }
+
+  /// 获取交易数据
   var exchangeData = json.decode(
       (await http.get(Uri.parse("https://api.coincap.io/v2/rates")))
           .body)["data"];
@@ -115,6 +172,7 @@ class _AppState extends State<App> {
 String sortingBy;
 
 class HomePage extends StatefulWidget {
+  /// savedPage true
   final bool savedPage;
   HomePage(this.savedPage) : super(key: ValueKey(savedPage));
   @override
@@ -225,6 +283,7 @@ class _HomePageState extends State<HomePage> {
           PopupMenuItem<String>(child: const Text("Custom"), value: "custom"));
     }
     Widget ret = Scaffold(
+      ///左侧滑动菜单栏
         drawer: widget.savedPage
             ? Drawer(
                 child: ListView(children: [
