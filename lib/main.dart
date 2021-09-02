@@ -68,7 +68,7 @@ num _exchangeRate;
 bool _loading = false;
 
 Future<dynamic> _apiGet(String link) async {
-  return json.decode((await http.get(Uri.encodeFull("$_api$link"))).body);
+  return json.decode((await http.get(Uri.parse("$_api$link"))).body);
 }
 
 void _changeCurrency(String currency) {
@@ -87,8 +87,9 @@ void main() async {
     _settings = {"disableGraphs": false, "currency": "USD"};
     _userData["settings"] = _settings;
   }
-  var exchangeData = json
-      .decode((await http.get("https://api.coincap.io/v2/rates")).body)["data"];
+  var exchangeData = json.decode(
+      (await http.get(Uri.parse("https://api.coincap.io/v2/rates")))
+          .body)["data"];
   _conversionMap = HashMap();
   for (dynamic data in exchangeData) {
     String symbol = data["symbol"];
@@ -283,7 +284,7 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                         color: Colors.black,
                         height: MediaQuery.of(context).size.height / 5,
-                        child: Image.asset("icon/platypus.png"),
+                        child: Image.asset("assets/icon/platypus.png"),
                       ),
                       onTap: () async {
                         String url = "https://platypuslabs.llc";
@@ -1147,7 +1148,7 @@ class _SimpleTimeSeriesChartState extends State<SimpleTimeSeriesChart> {
     super.initState();
     DateTime now = DateTime.now();
     http
-        .get(Uri.encodeFull(
+        .get(Uri.parse(
             "https://api.coincap.io/v2/assets/${widget.id}/history?interval=" +
                 widget.period +
                 "&start=" +
