@@ -18,55 +18,6 @@ import 'model/image_keys.dart';
 import 'model/config.dart';
 import "package:flutter_svg/flutter_svg.dart";
 
-String _api = "https://api.coincap.io/v2/";
-HashMap<String, Map<String, dynamic>> _coinData;
-HashMap<String, ValueNotifier<num>> _valueNotifiers =
-    HashMap<String, ValueNotifier<num>>();
-List<String> _savedCoins;
-Database _userData;
-Map<String, dynamic> _settings;
-String _symbol;
-
-LinkedHashSet<String> _supportedCurrencies = LinkedHashSet.from([
-  "USD",
-  "AUD",
-  "BGN",
-  "BRL",
-  "CAD",
-  "CHF",
-  "CNY",
-  "CZK",
-  "DKK",
-  "EUR",
-  "GBP",
-  "HKD",
-  "HRK",
-  "HUF",
-  "IDR",
-  "ILS",
-  "INR",
-  "ISK",
-  "JPY",
-  "KRW",
-  "MXN",
-  "MYR",
-  "NOK",
-  "NZD",
-  "PHP",
-  "PLN",
-  "RON",
-  "RUB",
-  "SEK",
-  "SGD",
-  "THB",
-  "TRY",
-  "ZAR"
-]);
-Map<String, dynamic> _conversionMap;
-num _exchangeRate;
-
-bool _loading = false;
-
 Future<dynamic> _apiGet(String link) async {
   return json.decode((await http.get(Uri.parse("$_api$link"))).body);
 }
@@ -322,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Settings()));
+                                  builder: (context) => SettingsPage()));
                         }
                       }),
                   ListTile(
@@ -537,12 +488,12 @@ class ImpExpPageState extends State<ImpExpPage> {
   }
 }
 
-class Settings extends StatefulWidget {
+class SettingsPage extends StatefulWidget {
   @override
-  SettingsState createState() => SettingsState();
+  SettingsPageState createState() => SettingsPageState();
 }
 
-class SettingsState extends State<Settings> {
+class SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
