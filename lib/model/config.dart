@@ -1,12 +1,11 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:local_database/local_database.dart';
 
-String syncKey = "";
-const String _api = "https://api.coincap.io/v2/";
-
 class Config {
+  String syncKey = "";
+  // static String _api = "https://api.coincap.io/v2/";
+  static String HOST = "http://flutter.yoqi.me/Api/";
   HashMap<String, Map<String, dynamic>> _coinData;
   HashMap<String, ValueNotifier<num>> _valueNotifiers =
       HashMap<String, ValueNotifier<num>>();
