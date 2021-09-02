@@ -1,0 +1,67 @@
+name: CI
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        # os: [ubuntu-latest, macos-latest]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: "8.x"
+
+      - name: Setup gradle
+        uses: eskatos/gradle-command-action@v1
+        with:
+          gradle-version: 6.5
+
+      - name: Flutter action
+        uses: subosito/flutter-action@v1.5.3
+        with:
+          channel: "stable"
+          flutter-version: "2.0.5"
+
+      - name: Cache Dependencies
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            Pods
+          key: |
+            ${{runner.OS}}-gradle-caches-${{ hashFiles('pubspec.lock') }}
+            ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+            ${{ runner.os }}-gradle-
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: flutter pub get
+
+      - name: Build apk
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          flutter clean
+          flutter build apk --release --split-per-abi
+
+      # output some file:
+      - name: artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{runner.OS}}-artifact
+          path: |
+            build/app/outputs/flutter-apk/**/*.apk
+            build/ios/**/*.ipa
+            build/web/web-app.zip

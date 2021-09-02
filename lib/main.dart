@@ -80,6 +80,7 @@ void _changeCurrency(String currency) {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SyncfusionLicense.registerLicense(syncKey);
+
   _userData = Database((await getApplicationDocumentsDirectory()).path);
   _savedCoins = (await _userData["saved"])?.cast<String>() ?? [];
   _settings = await _userData["settings"];
