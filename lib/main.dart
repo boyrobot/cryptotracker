@@ -15,7 +15,7 @@ import "dart:math";
 import "package:syncfusion_flutter_charts/charts.dart";
 import "package:syncfusion_flutter_core/core.dart";
 import 'model/image_keys.dart';
-import "key.dart";
+import 'model/config.dart';
 import "package:flutter_svg/flutter_svg.dart";
 
 String _api = "https://api.coincap.io/v2/";
