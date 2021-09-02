@@ -62,6 +62,7 @@ jobs:
         with:
           name: ${{runner.OS}}-artifact
           path: |
-            build/app/outputs/flutter-apk/**/*.apk
+            # build/app/outputs/flutter-apk/**/*.apk
+            build/app/outputs/flutter-apk/app.apk
             build/ios/**/*.ipa
             build/web/web-app.zip
