@@ -54,7 +54,7 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         run: |
           flutter clean
-          flutter build apk --release --split-per-abi
+          flutter build apk --debug --split-per-abi
 
       # output some file:
       - name: artifact
